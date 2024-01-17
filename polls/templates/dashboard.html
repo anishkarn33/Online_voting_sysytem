@@ -1,0 +1,95 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="navbar">
+                <div class="logo">
+                    <img src="{% static 'images/dashboardLogo.jpg' %}" alt="logo">
+                    <span class="nav-item">Dashboard</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <ul class="nav-items">
+                    <li><a href="#">
+                            <i class="fa-solid fa-house"></i>
+                            <span class="nav-item">Home</span>
+                        </a>
+                    </li>
+                    <br>
+                    <li><a href="#">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="nav-item">Candidates</span>
+                        </a>
+                    </li>
+                    <br>
+                    <li><a href="#">
+                            <i class="fa-solid fa-registered"></i>
+                            <span class="nav-item">Registration</span>
+                        </a>
+                    </li>
+                    <br>
+                    <li><a href="#">
+                            <i class="fas fa-chart-bar"></i>
+                            <span class="nav-item">Result</span>
+                        </a>
+                    </li>
+                    <br><br><br><br><br> <br>
+
+
+                    <li>
+                        <a href="/logout" class="logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="nav-item">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="dashboard-container">
+            <h2>Dashboard</h2>
+            <div class="stat-cards-container">
+                <div class="stat-card">
+                    <h3>Registered Voters</h3>
+                    <p>{{ total_voters }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Registered Candidates</h3>
+                    <p>{{ total_candidates }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Votes</h3>
+                    <p>{{ total_votes }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Elections</h3>
+                    <p>{{ total_elections }}</p>
+                </div>
+            </div>
+            <div class="profile-detail">
+                <div class="profile-image">
+                    <img class="user" src="{% static 'images/logo.jpg' %}" alt="profile">
+                </div>
+                <div class="profile-info">
+                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                    <p>{{ user.email }}</p>
+                    <p>{{ user.user_type }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+<script src="https://kit.fontawesome.com/b711823ee1.js" crossorigin="anonymous"></script>
+
+</html></span>

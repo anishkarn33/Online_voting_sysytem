@@ -1,0 +1,50 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: url("{% static 'images/background.jpg' %}");
+        background-size: cover;
+        font-family: arial;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loginBox">
+      <img class="user" src="{% static 'images/logo.jpg' %}" />
+      <h2>Log In</h2>
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">{{ form.username }}</div>
+        <div class="form-group">
+          <div class="password-container">
+            {{ form.password }}
+          </div>
+        </div>
+        <input type="submit" value="Sign In" />
+
+        <!-- error -->
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+        <div class="newUser">
+          <a href="/register">New user?</a> &nbsp; &nbsp; &nbsp;
+          <a href="#">Forget Password</a>
+        </div>
+      </form>
+    </div>
+    <script src="{% static 'js/validation.js' %}"></script>
+    <script
+      src="https://kit.fontawesome.com/b711823ee1.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
