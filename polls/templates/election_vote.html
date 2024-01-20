@@ -1,0 +1,130 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vote</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+</head>
+
+<body>
+    <div class="flex">
+        <nav class="sidebar">
+            <div class="navbar">
+                <div class="logo">
+                    <img src="{% static 'images/dashboardLogo.jpg' %}" alt="logo">
+                    <span class="nav-item">Dashboard</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <ul class="nav-items">
+                    <li><a href="/dashboard">
+                            <i class="fa-solid fa-house"></i>
+                            <span class="nav-item">Home</span>
+                        </a>
+                    </li>
+                    <br>
+                    <li><a href="/candidates">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="nav-item">Candidates</span>
+                        </a>
+                    </li>
+                    <br>
+                    <li><a href="/elections">
+                        <i class="fa-solid fa-check-to-slot"></i>
+                        <span class="nav-item">Elections</span>
+                    </a>
+                </li>
+                    <br>
+                    <li><a href="/result">
+                            <i class="fas fa-chart-bar"></i>
+                            <span class="nav-item">Result</span>
+                        </a>
+                    </li>
+                    <br><br><br><br><br> <br>
+
+
+                    <li>
+                        <a href="/logout" class="logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="nav-item">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="flex flex-col h-screen w-full bg-white px-12 py-12">
+            <h1 class="capitalize col-span-12 text-left mb-5 text-3xl font-bold">
+                Select Candidate to Vote
+              </h1>
+
+              <h1 class="capitalize col-span-12 text-left mb-5 text-2xl font-bold">
+                Name: {{ election.name }}
+              </h1>
+              
+              {% if candidates|length == 0 %}
+              <h2
+                class="col-span-12 text-indigo-600 text-xl font-bold my-12"
+              >
+                No candidates has participated in this election yet!
+              </h2>
+              {% else %}
+              <div class="col-span-12 grid grid-cols-12 gap-5 mt-12">
+                {% for candidate in candidates %}
+                <div
+                  class="col-span-12 md:col-span-6 lg:col-span-4 sm:flex bg-indigo-50 rounded-lg p-5 gap-5 h-full border border-transparent cursor-pointer hover:shadow-lg hover:border-indigo-300"
+                >
+                  <img
+                    src="{% static 'images/logo.jpg' %}"
+                    alt="user.firstname"
+                    class="rounded-full w-20 h-20 object-cover"
+                  />
+                  <div class="text-left mt-3 sm:mt-0">
+                    <h2 class="text-lg font-semibold">
+                      {{ candidate.candidate.first_name }} {{ candidate.candidate.last_name }}
+                    </h2>
+                    <span class="block mb-4">{{ candidate.candidate.email }}</span>
+
+                    <div class="flex flex-wrap gap-1 items-center justify-between">
+                      <div
+                        class="rounded-full bg-white px-2 uppercase py-0.5 text-xs text-red-500 border border-red-300"
+                      >
+                        {{ candidate.candidate.user_type  }}
+                    </div>
+
+                    <div>
+
+                      <form action="{% url 'vote' election.id candidate.candidate.id %}"
+                      method="POST">
+                        {% csrf_token %}
+                        <button
+                          class="capitalize text-sm bg-green-400 hover:bg-green-500 text-white hover:text-white py-1 px-4 rounded-md cursor-pointer"
+                          >
+                          Vote
+                        </button>
+                        </form>
+                  </div>
+
+                    </div>
+
+                    
+
+
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+    </div>
+
+</body>
+<script src="https://kit.fontawesome.com/b711823ee1.js" crossorigin="anonymous"></script>
+
+</html></span>

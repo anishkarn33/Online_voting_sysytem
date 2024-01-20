@@ -1,10 +1,11 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
+from django.db.models import Count, Q
+from django.utils import timezone
 from .forms import LoginForm, RegisterForm
 from .models import *
-
+from .decorators import voter_required, candidate_required, admin_required
 
 def index_view(request):
     if request.user.is_authenticated:
@@ -73,6 +74,162 @@ def dashboard(request):
         'user': current_user
     })
 
+
+@login_required(login_url='/login/')
+def candidates(request):
+    candidates_users = User.objects.filter(user_type=User.USER_TYPE_CANDIDATE)
+
+    current_user = request.user
+
+    return render(request, 'candidates.html', {
+        'candidates': candidates_users,
+        'user': current_user
+    })
+
+@login_required(login_url='/login/')
+def elections(request):
+    elections = Election.objects.all().annotate(
+        candidates_count=Count('candidates'),
+        voters_count=Count('voters'),
+        votes_count=Count('votes'),
+        is_voted=Count('votes', filter=Q(votes__voter=request.user)),
+        is_allowed_to_vote=Count('voters', filter=Q(voters__voter=request.user)),
+        is_candidate=Count('candidates', filter=Q(candidates__candidate=request.user)),
+    ).filter(
+        Q(start_date__lte=timezone.now()) & Q(end_date__gte=timezone.now())
+    )
+    current_user = request.user
+
+    return render(request, 'elections.html', {
+        'elections': elections,
+        'user': current_user
+    })
+
+
+@login_required(login_url='/login/')
+def election_vote(request, election_id):
+    election = Election.objects.filter(id=election_id).first()
+
+    # check if the election exists and active by dates
+    if not election:
+        return redirect('elections')
+    
+    if not (election.start_date <= timezone.now() <= election.end_date):
+        return redirect('elections')
+
+    # check if the user is allowed to vote
+    if not ElectionVoter.objects.filter(election=election, voter=request.user).exists():
+        return redirect('elections')
+    
+    # check if the user has already voted
+    if Vote.objects.filter(election=election, voter=request.user).exists():
+        return redirect('elections')
+
+    election_candidates = ElectionCandidate.objects.filter(election=election)
+
+
+    current_user = request.user
+
+    return render(request, 'election_vote.html', {
+        'election': election,
+        'candidates': election_candidates,
+        'user': current_user
+    })
+
+# election voter register
+@login_required(login_url='/login/')
+@voter_required
+def election_voter_register(request, election_id):
+    if request.method == 'POST':
+        election = Election.objects.filter(id=election_id).first()
+
+        if not election:
+            return redirect('elections')
+
+        # check if the user is already registered
+        if ElectionVoter.objects.filter(election=election, voter=request.user).exists():
+            return redirect('elections', election_id=election_id)
+
+        # register the user
+        ElectionVoter.objects.create(
+            election=election,
+            voter=request.user
+        )
+
+        return redirect('election_vote', election_id=election_id)
+    else:
+        return redirect('elections', election_id=election_id)
+
+
+# election candidate register
+@login_required(login_url='/login/')
+@candidate_required
+def election_candidate_register(request, election_id):
+    if request.method == 'POST':
+        election = Election.objects.filter(id=election_id).first()
+
+        if not election:
+            return redirect('elections')
+
+        # check if the user is already registered
+        if ElectionCandidate.objects.filter(election=election, candidate=request.user).exists():
+            return redirect('elections')
+
+        # register the user
+        ElectionCandidate.objects.create(
+            election=election,
+            candidate=request.user
+        )
+
+        return redirect('elections')
+    else:
+        return redirect('elections')
+
+# vote view
+@login_required(login_url='/login/')
+@voter_required
+def vote(request, election_id, candidate_id):
+    if request.method == 'POST':
+        election = Election.objects.filter(id=election_id).first()
+        candidate = User.objects.filter(id=candidate_id).first()
+
+        if not election:
+            return redirect('elections')
+
+        if not candidate:
+            return redirect('election_vote', election_id=election_id)
+
+        # check if the user has already voted
+        if Vote.objects.filter(election=election, voter=request.user).exists():
+            return redirect('election_vote', election_id=election_id)
+
+        # check if the user is allowed to vote
+        if not ElectionVoter.objects.filter(election=election, voter=request.user).exists():
+            return redirect('election_vote', election_id=election_id)
+
+        # create a vote
+        vote = Vote.objects.create(
+            election=election,
+            voter=request.user,
+            candidate=candidate
+        )
+
+        # TODO: create a result
+        # result = ElectionResult.objects.filter(
+        #     election=election, candidate=candidate).first()
+        # if result:
+        #     result.vote_count += 1
+        #     result.save()
+        # else:
+        #     ElectionResult.objects.create(
+        #         election=election,
+        #         candidate=candidate,
+        #         vote_count=1
+        #     )
+
+        return redirect('elections')
+    else:
+        return redirect('election_vote', election_id=election_id)
 
 @login_required(login_url='/login/')
 def logout_view(request):

@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
 </head>
 
 <body>
-    <div class="container">
+    <div class="flex">
         <nav class="sidebar">
             <div class="navbar">
                 <div class="logo">
@@ -20,25 +21,25 @@
                     <i class="fa-solid fa-bars"></i>
                 </div>
                 <ul class="nav-items">
-                    <li><a href="#">
+                    <li><a href="/dashboard">
                             <i class="fa-solid fa-house"></i>
                             <span class="nav-item">Home</span>
                         </a>
                     </li>
                     <br>
-                    <li><a href="#">
+                    <li><a href="/candidates">
                             <i class="fa-solid fa-users"></i>
                             <span class="nav-item">Candidates</span>
                         </a>
                     </li>
                     <br>
-                    <li><a href="#">
-                            <i class="fa-solid fa-registered"></i>
-                            <span class="nav-item">Registration</span>
+                    <li><a href="/elections">
+                            <i class="fa-solid fa-check-to-slot"></i>
+                            <span class="nav-item">Elections</span>
                         </a>
                     </li>
                     <br>
-                    <li><a href="#">
+                    <li><a href="/result">
                             <i class="fas fa-chart-bar"></i>
                             <span class="nav-item">Result</span>
                         </a>
@@ -55,36 +56,115 @@
                 </ul>
             </div>
         </nav>
-        <div class="dashboard-container">
-            <h2>Dashboard</h2>
-            <div class="stat-cards-container">
-                <div class="stat-card">
-                    <h3>Registered Voters</h3>
-                    <p>{{ total_voters }}</p>
+        <div class="flex flex-col h-screen w-full bg-white px-12 py-12">
+
+            <div
+            class="border rounded-lg shadow-lg bg-white w-full flex flex-col justify-between gap-4 p-5"
+            >
+
+            <div class="flex flex-row justify-between items-center">
+
+                <h1 class="text-gray-800 capitalize col-span-12 text-left mb-5 text-3xl font-bold">
+                    Dashboard
+                </h1>
+
+                <div
+                
+                >
+
+                    <a href="/elections" 
+                    class="px-6 py-2 text-lg bg-green-500 text-white rounded-md shadow-md hover:bg-green-400 transition-all duration-200 ease-in-out"
+                    >
+                    Vote
+                </a>
                 </div>
-                <div class="stat-card">
-                    <h3>Registered Candidates</h3>
-                    <p>{{ total_candidates }}</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Total Votes</h3>
-                    <p>{{ total_votes }}</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Total Elections</h3>
-                    <p>{{ total_elections }}</p>
+
+                
+            </div>
+            <div class="container pt-5">
+                <div class="flex flex-row justify-between space-x-4">
+                    <div class="c-dashboardInfo w-full">
+                        <div class="wrap">
+                            <h4 class="heading heading5 hind-font medium-font-weight c-dashboardInfo__title">Voters<svg
+                                    class="MuiSvgIcon-root-19" focusable="false" viewBox="0 0 24 24" aria-hidden="true"
+                                    role="presentation">
+                                    <path fill="none" d="M0 0h24v24H0z"></path>
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z">
+                                    </path>
+                                </svg></h4><span class="hind-font caption-12 c-dashboardInfo__count">{{ total_voters }}</span>
+                        </div>
+                    </div>
+                    <div class="c-dashboardInfo w-full">
+                        <div class="wrap">
+                            <h4 class="heading heading5 hind-font medium-font-weight c-dashboardInfo__title">
+                                Candidates<svg class="MuiSvgIcon-root-19" focusable="false" viewBox="0 0 24 24"
+                                    aria-hidden="true" role="presentation">
+                                    <path fill="none" d="M0 0h24v24H0z"></path>
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z">
+                                    </path>
+                                </svg></h4><span class="hind-font caption-12 c-dashboardInfo__count">{{ total_candidates }}</span>
+                        </div>
+                    </div>
+                    <div class="c-dashboardInfo w-full">
+                        <div class="wrap">
+                            <h4 class="heading heading5 hind-font medium-font-weight c-dashboardInfo__title">Total
+                                Votes<svg class="MuiSvgIcon-root-19" focusable="false" viewBox="0 0 24 24"
+                                    aria-hidden="true" role="presentation">
+                                    <path fill="none" d="M0 0h24v24H0z"></path>
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z">
+                                    </path>
+                                </svg></h4><span class="hind-font caption-12 c-dashboardInfo__count">{{ total_votes }}</span>
+                        </div>
+                    </div>
+                    <div class="c-dashboardInfo w-full">
+                        <div class="wrap">
+                            <h4 class="heading heading5 hind-font medium-font-weight c-dashboardInfo__title">Total
+                                Elections<svg class="MuiSvgIcon-root-19" focusable="false" viewBox="0 0 24 24"
+                                    aria-hidden="true" role="presentation">
+                                    <path fill="none" d="M0 0h24v24H0z"></path>
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z">
+                                    </path>
+                                </svg></h4><span class="hind-font caption-12 c-dashboardInfo__count">{{ total_elections }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="profile-detail">
-                <div class="profile-image">
-                    <img class="user" src="{% static 'images/logo.jpg' %}" alt="profile">
-                </div>
-                <div class="profile-info">
-                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
-                    <p>{{ user.email }}</p>
-                    <p>{{ user.user_type }}</p>
+        </div>
+
+
+        <div class="mt-4 border rounded-lg shadow-lg bg-white w-full flex flex-col justify-between gap-4 p-5">
+
+            <!-- User Card -->
+            <h1 class="capitalize col-span-12 text-left mb-5 text-xl font-bold mt-12">
+                Personal information
+              </h1>
+            <div class="col-span-12 grid grid-cols-12 gap-5 mt-4">
+                <div
+                    class="col-span-12 md:col-span-6 lg:col-span-4 sm:flex bg-indigo-50 rounded-lg p-5 gap-5 h-full border border-transparent cursor-pointer hover:shadow-lg hover:border-indigo-300">
+                    <img src="{% static 'images/logo.jpg' %}" alt="user.firstname"
+                        class="rounded-full w-20 h-20 object-cover" />
+                    <div class="text-left mt-3 sm:mt-0">
+                        <h2 class="text-lg font-semibold">
+                            {{ user.first_name }} {{ user.last_name }}
+                        </h2>
+                        <span class="block mb-4">{{ user.email }}</span>
+                        <ul class="flex flex-wrap gap-1 items-center">
+                            <li
+                                class="rounded-full bg-white px-2 py-0.5 text-xs text-indigo-500 border border-gray-300">
+                                {{ user.user_type }}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+        </div>
+
+
+
         </div>
     </div>
     </div>
