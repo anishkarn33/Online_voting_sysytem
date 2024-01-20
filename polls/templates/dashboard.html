@@ -68,6 +68,8 @@
                     Dashboard
                 </h1>
 
+                {% if user.user_type == 'voter' %}
+
                 <div
                 
                 >
@@ -78,6 +80,8 @@
                     Vote
                 </a>
                 </div>
+                    
+                    {% endif %}
 
                 
             </div>
