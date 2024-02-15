@@ -71,7 +71,7 @@ h2 {
   height: 40px;
   color: #eee;
   font-size: 16px;
-  background-color: #ff8c00;
+  background: transparent;
   cursor: pointer;
   border-radius: 20px;
   margin: 12px 0 18px;
@@ -80,7 +80,7 @@ h2 {
 }
 
 .loginBox input[type="submit"]:hover {
-  background-color: #ff9719;
+  background-color: #68685f;
   color: #fff;
 }
 

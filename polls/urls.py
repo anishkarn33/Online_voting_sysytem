@@ -17,4 +17,6 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
     path('', views.index_view, name='index'),
+    path('result/', views.show_results, name='result'),
+    path('elections/<int:election_id>/vote/<int:candidate_id>/', views.vote, name='vote')
 ]

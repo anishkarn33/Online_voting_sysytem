@@ -8,10 +8,16 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
     <style>
       body {
-        margin: 0;
-        padding: 0;
-        background: url("{% static 'images/background.jpg' %}");
+        margin: 80px;
+        padding: 20px;
+        background: url("{% static 'images/login.jpg' %}") no-repeat center
+          center;
         background-size: cover;
+        width: 90%;
+        height: 60vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         font-family: arial;
         text-align: center;
       }
@@ -19,15 +25,13 @@
   </head>
   <body>
     <div class="loginBox">
-      <img class="user" src="{% static 'images/logo.jpg' %}" />
+      <img class="user" src="{% static 'images/lestvote.jpg' %}" />
       <h2>Log In</h2>
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         <div class="form-group">{{ form.username }}</div>
         <div class="form-group">
-          <div class="password-container">
-            {{ form.password }}
-          </div>
+          <div class="password-container">{{ form.password }}</div>
         </div>
         <input type="submit" value="Sign In" />
 

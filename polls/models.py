@@ -47,10 +47,8 @@ class Election(models.Model):
 
 
 class ElectionCandidate(models.Model):
-    election = models.ForeignKey(
-        Election, on_delete=models.CASCADE, related_name='candidates')
-    candidate = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='elections')
+    election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='candidates')
+    candidate = models.ForeignKey(User, on_delete=models.CASCADE, related_name='elections')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

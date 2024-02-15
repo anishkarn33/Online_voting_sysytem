@@ -235,3 +235,15 @@ def vote(request, election_id, candidate_id):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def show_results(request):
+    # Retrieve all election results from the database
+    results = ElectionResult.objects.all()
+    # Pass the results to the template for rendering
+    return render(request, 'result.html', {'results': results})
+
+def vote(request, election_id, candidate_id):
+    if request.method == 'POST':
+        return redirect('elections')  # Redirect to the elections page or any other appropriate page
+    else:
+        return redirect('elections')

@@ -154,11 +154,11 @@ button:hover {
   }
 }
 
-
 .loginBox {
   position: absolute;
   top: 50%;
   left: 50%;
+  height: 200vh;
   transform: translate(-50%, -50%);
   width: 400px;
   padding: 70px 40px;
@@ -200,7 +200,7 @@ h2 {
   background: transparent;
   outline: none;
   height: 40px;
-  color: #fff;
+  color: hsl(168, 22%, 95%);
   font-size: 16px;
 }
 .eye {
@@ -227,7 +227,7 @@ h2 {
   height: 40px;
   color: #eee;
   font-size: 16px;
-  background-color: #ff8c00;
+  background-color: transparent;
   cursor: pointer;
   border-radius: 20px;
   margin: 12px 0 18px;
@@ -248,7 +248,7 @@ h2 {
 }
 .newUser {
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
 }
 
 .error {
@@ -267,6 +267,6 @@ select {
   background: transparent;
   outline: none;
   height: 40px;
-  color: #fff;
+  color: #0e6e61;
   font-size: 16px;
 }

@@ -8,10 +8,15 @@
     <link rel="stylesheet" href="{% static 'css/register.css' %}" />
     <style>
       body {
-        margin: 0;
-        padding: 0;
-        background: url("{% static 'images/background.jpg' %}");
+        margin: 100px;
+        padding: 5px;
+        background: url("{% static 'images/register4.jpg' %}");
         background-size: cover;
+        width: 90%;
+        height: 60vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         font-family: arial;
         text-align: center;
       }
@@ -26,6 +31,7 @@
         {% csrf_token %}
 
         <div class="form-group">{{ form.first_name }}{{ form.last_name }}</div>
+        <div class="form-group">{{ form.roll_no }}</div>
         <div class="form-group">{{ form.email }}</div>
         <div class="form-group">{{ form.password1 }}</div>
         <div class="form-group">{{ form.password2 }}</div>
