@@ -40,7 +40,7 @@ class RegisterForm(UserCreationForm):
         self.fields['first_name'].widget.attrs.update({'class': '', 'placeholder': 'First Name'})
         self.fields['last_name'].widget.attrs.update({'class': '', 'placeholder': 'Last Name'})
         self.fields['email'].widget.attrs.update({'class': '', 'placeholder': 'Email'})
-        self.fields['roll_no'].widget.attrs.update({'class': '', 'placeholder': 'roll no'})
+        self.fields['roll_no'].widget.attrs.update({'class': '', 'placeholder': 'Roll No.'})
         self.fields['user_type'].widget.attrs.update({'class': ''})
         self.fields['password1'].widget.attrs.update({'class': '', 'placeholder': 'Password'})
         self.fields['password2'].widget.attrs.update({'class': '', 'placeholder': 'Confirm password'})

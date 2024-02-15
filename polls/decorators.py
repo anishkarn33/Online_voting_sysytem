@@ -28,6 +28,20 @@ def candidate_required(function=None, redirect_field_name='next', login_url='log
         return actual_decorator(function)
     return actual_decorator
 
+def election_admin_required(function=None, redirect_field_name='next', login_url='login'):
+    '''
+    Decorator for views that checks that the logged in user is a election admin,
+    redirects to the log-in page if necessary.
+    '''
+    actual_decorator = user_passes_test(
+        lambda u: u.is_active and u.user_type == 'admin',
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
 def admin_required(function=None, redirect_field_name='next', login_url='login'):
     '''
     Decorator for views that checks that the logged in user is an admin,
@@ -35,6 +49,20 @@ def admin_required(function=None, redirect_field_name='next', login_url='login')
     '''
     actual_decorator = user_passes_test(
         lambda u: u.is_active and u.is_superuser,
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+def election_admin_or_superadmin_required(function=None, redirect_field_name='next', login_url='login'):
+    '''
+    Decorator for views that checks that the logged in user is an election admin or superadmin,
+    redirects to the log-in page if necessary.
+    '''
+    actual_decorator = user_passes_test(
+        lambda u: u.is_active and (u.user_type == 'admin' or u.is_superuser),
         login_url=login_url,
         redirect_field_name=redirect_field_name
     )

@@ -2,78 +2,126 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <title>Election Results</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-</head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    />
+  </head>
 
-<body>
+  <body>
     <div class="flex">
-        <nav class="sidebar">
-            <div class="navbar">
-                <div class="logo">
-                    <img src="{% static 'images/dashboardLogo.jpg' %}" alt="logo">
-                    <span class="nav-item">Dashboard</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <i class="fa-solid fa-bars"></i>
-                </div>
-                <ul class="nav-items">
-                    <li><a href="/dashboard">
-                            <i class="fa-solid fa-house"></i>
-                            <span class="nav-item">Home</span>
-                        </a>
-                    </li>
-                    <br>
-                    <li><a href="/candidates">
-                            <i class="fa-solid fa-users"></i>
-                            <span class="nav-item">Candidates</span>
-                        </a>
-                    </li>
-                    <br>
-                    <li><a href="/elections">
-                        <i class="fa-solid fa-check-to-slot"></i>
-                        <span class="nav-item">Elections</span>
-                    </a>
-                </li>
-                    <br>
-                    <li><a href="/result">
-                            <i class="fas fa-chart-bar"></i>
-                            <span class="nav-item">Result</span>
-                        </a>
-                    </li>
-                    <br><br><br><br><br> <br>
-                    <li>
-                        <a href="/logout" class="logout">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span class="nav-item">Logout</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div class="flex flex-col h-screen w-full bg-white px-12 py-12">
-            <h1 class="capitalize col-span-12 text-left mb-5 text-3xl font-bold">
-                Election Results
-              </h1>
-              <div class="col-span-12 grid grid-cols-12 gap-5 mt-12">
-                <!-- Loop through election results from API -->
-                {% for result in results %}
-                <div class="col-span-12 md:col-span-4 lg:col-span-3 sm:flex bg-indigo-50 rounded-lg p-5 gap-5 h-full border border-transparent cursor-pointer hover:shadow-lg hover:border-indigo-300">
-                    <div class="text-left mt-3 sm:mt-0">
-                        <h2 class="text-lg font-semibold">{{ result.election }}</h2>
-                        <span class="block mb-4">{{ result.candidate }}</span>
-                        <span class="block mb-4">{{ result.vote_count }}</span>
-                        <span class="block mb-4">{{ result.created_at }}</span>
-                        <span class="block mb-4">{{ result.updated_at }}</span>
-                    </div>
-                </div>
-                {% endfor %}
-              </div>
+      <nav class="sidebar">
+        <div class="navbar">
+          <div class="logo">
+            <img src="{% static 'images/dashboardLogo.jpg' %}" alt="logo" />
+            <span class="nav-item">Dashboard</span> &nbsp; &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp;
+            <i class="fa-solid fa-bars"></i>
+          </div>
+          <ul class="nav-items">
+            <li>
+              <a href="/dashboard">
+                <i class="fa-solid fa-house"></i>
+                <span class="nav-item">Home</span>
+              </a>
+            </li>
+            <br />
+            <li>
+              <a href="/candidates">
+                <i class="fa-solid fa-users"></i>
+                <span class="nav-item">Candidates</span>
+              </a>
+            </li>
+            <br />
+            <li>
+              <a href="/elections">
+                <i class="fa-solid fa-check-to-slot"></i>
+                <span class="nav-item">Elections</span>
+              </a>
+            </li>
+            <br />
+            <li>
+              <a href="/result">
+                <i class="fas fa-chart-bar"></i>
+                <span class="nav-item">Result</span>
+              </a>
+            </li>
+            <br /><br /><br /><br /><br />
+            <br />
+            <li>
+              <a href="/logout" class="logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="nav-item">Logout</span>
+              </a>
+            </li>
+          </ul>
         </div>
+      </nav>
+      <div class="flex flex-col h-screen w-full bg-white px-12 py-12 overflow-y-scroll">
+        <h1 class="capitalize col-span-12 text-left mb-2 text-3xl font-bold">
+          Election Results
+        </h1>
+        <div class="col-span-12 grid grid-cols-12 gap-5">
+          {% regroup results by election as election_results %} 
+          {% for election_result in election_results %}
+          <div
+            class="col-span-12 shadow-lg grid grid-cols-12 gap-5 mt-6 border p-4 rounded-lg"
+          >
+            <div class="col-span-12">
+              <h3 class="text-lg text-semibold">
+                {{ election_result.grouper.name }}
+              </h3>
+              <p class="text-yellow-700 text-xs">
+                Election Ended: {{ election_result.grouper.end_date|date:"M d,Y"}}
+              </p>
+            </div>
+            <div class="col-span-12">
+              <p class="text-semibold text-md">Candidates</p>
+              <div class="col-span-12 grid grid-cols-12 gap-5 mt-6">
+                <div
+                  class="col-span-12 sm:flex  gap-5"
+                >
+                  {% for election_result in election_result.list %}
+                  <div
+                    class="p-5 border bg-gray-50 hover:shadow-md rounded-xl hover:border-blue-300 h-full"
+                  >
+                    <div class="text-left mt-3 sm:mt-0">
+                      <span class="block mb-4 capitalize">
+                        Candidate: {{ election_result.candidate.first_name }}
+                        {{election_result.candidate.last_name }}</span
+                      >
+                      <div
+                        class="flex flex-wrap gap-1 items-center justify-between"
+                      >
+                        <div
+                          class="bg-grey-200  py-0.5 text-xl text-green-500"
+                        >
+                          Votes: {{ election_result.vote_count }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                {% endfor %}
+                </div>
+
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
-    </div>
-</body>
-<script src="https://kit.fontawesome.com/b711823ee1.js" crossorigin="anonymous"></script>
+  </body>
+  <script
+    src="https://kit.fontawesome.com/b711823ee1.js"
+    crossorigin="anonymous"
+  ></script>
 </html>

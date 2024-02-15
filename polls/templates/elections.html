@@ -101,9 +101,9 @@
               
               {% if elections|length == 0 %}
               <h2
-                class="col-span-12 text-indigo-600 text-xl font-bold my-12"
+                class="col-span-12 h-full text-center text-red-400 text-xl font-bold my-12"
               >
-                No results found!
+                No elections are running currently!
               </h2>
               {% else %}
               <div class="col-span-12 grid grid-cols-12 gap-5 mt-12">
@@ -172,7 +172,15 @@
                     </div>
                     {% endif %}
 
-
+                    {% elif user.user_type == 'admin' or election.is_election_admin %}
+                    <form action="{% url 'election_close' election.id %}" method="POST">
+                      {% csrf_token %}
+                      <button
+                      class="rounded-lg disabled bg-white px-2 uppercase py-1 text-xs bg-red-500 border text-white"
+                      >
+                      Close Election
+                     </button>
+                   </form>
                     {% endif %}
 
                   </div>

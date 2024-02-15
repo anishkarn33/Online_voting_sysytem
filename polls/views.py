@@ -5,7 +5,8 @@ from django.db.models import Count, Q
 from django.utils import timezone
 from .forms import LoginForm, RegisterForm
 from .models import *
-from .decorators import voter_required, candidate_required, admin_required
+from .decorators import voter_required, candidate_required, admin_required, election_admin_or_superadmin_required, election_admin_required
+
 
 def index_view(request):
     if request.user.is_authenticated:
@@ -86,6 +87,7 @@ def candidates(request):
         'user': current_user
     })
 
+
 @login_required(login_url='/login/')
 def elections(request):
     elections = Election.objects.all().annotate(
@@ -93,8 +95,11 @@ def elections(request):
         voters_count=Count('voters'),
         votes_count=Count('votes'),
         is_voted=Count('votes', filter=Q(votes__voter=request.user)),
-        is_allowed_to_vote=Count('voters', filter=Q(voters__voter=request.user)),
-        is_candidate=Count('candidates', filter=Q(candidates__candidate=request.user)),
+        is_allowed_to_vote=Count(
+            'voters', filter=Q(voters__voter=request.user)),
+        is_candidate=Count('candidates', filter=Q(
+            candidates__candidate=request.user)),
+        is_election_admin=Count('admins', filter=Q(admins__admin=request.user))
     ).filter(
         Q(start_date__lte=timezone.now()) & Q(end_date__gte=timezone.now())
     )
@@ -113,20 +118,19 @@ def election_vote(request, election_id):
     # check if the election exists and active by dates
     if not election:
         return redirect('elections')
-    
+
     if not (election.start_date <= timezone.now() <= election.end_date):
         return redirect('elections')
 
     # check if the user is allowed to vote
     if not ElectionVoter.objects.filter(election=election, voter=request.user).exists():
         return redirect('elections')
-    
+
     # check if the user has already voted
     if Vote.objects.filter(election=election, voter=request.user).exists():
         return redirect('elections')
 
     election_candidates = ElectionCandidate.objects.filter(election=election)
-
 
     current_user = request.user
 
@@ -137,6 +141,8 @@ def election_vote(request, election_id):
     })
 
 # election voter register
+
+
 @login_required(login_url='/login/')
 @voter_required
 def election_voter_register(request, election_id):
@@ -185,7 +191,47 @@ def election_candidate_register(request, election_id):
     else:
         return redirect('elections')
 
+# election close
+
+
+@login_required(login_url='/login/')
+@election_admin_or_superadmin_required
+def election_close(request, election_id):
+    if request.method == 'POST':
+        election = Election.objects.filter(id=election_id).first()
+
+        if not election:
+            return redirect('elections')
+
+        # check if the user is election admin (removed for now, as we are using superadmin for now)
+        # if not ElectionAdmin.objects.filter(election=election, admin=request.user).exists():
+        #     return redirect('elections')
+
+        # change end date to today date if the election is still active
+        election.end_date = timezone.now()
+        election.save()
+
+        # get all election candidates
+        election_candidates = ElectionCandidate.objects.filter(
+            election=election)
+
+        # for every election candidates, create a election result
+        for candidate in election_candidates:
+            total_vote_count = Vote.objects.filter(
+                election=election, candidate=candidate.candidate).count()
+            ElectionResult.objects.create(
+                election=election,
+                candidate=candidate.candidate,
+                vote_count=total_vote_count
+            )
+
+        return redirect('elections')
+    else:
+        return redirect('elections')
+
 # vote view
+
+
 @login_required(login_url='/login/')
 @voter_required
 def vote(request, election_id, candidate_id):
@@ -231,19 +277,20 @@ def vote(request, election_id, candidate_id):
     else:
         return redirect('election_vote', election_id=election_id)
 
+
 @login_required(login_url='/login/')
 def logout_view(request):
     logout(request)
     return redirect('login')
 
-def show_results(request):
-    # Retrieve all election results from the database
-    results = ElectionResult.objects.all()
-    # Pass the results to the template for rendering
-    return render(request, 'result.html', {'results': results})
 
-def vote(request, election_id, candidate_id):
-    if request.method == 'POST':
-        return redirect('elections')  # Redirect to the elections page or any other appropriate page
-    else:
-        return redirect('elections')
+@login_required(login_url='/login/')
+def show_results(request):
+    # Retrieve all election results from the database along with election details and candidate details (grouped by election)
+    results = ElectionResult.objects.all().select_related('election', 'candidate').order_by(
+        'election', '-vote_count').annotate(total_votes=Count('vote_count'))
+
+    if len(results) > 0:
+        # print raw data
+        print(results[0])
+    return render(request, 'result.html', {'results': results})
